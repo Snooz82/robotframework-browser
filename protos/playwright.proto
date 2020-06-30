@@ -49,6 +49,10 @@ service  Playwright {
   rpc CloseBrowser(Empty) returns (Response.Empty) {}
   /* Opens the url in currently open Playwright page */ 
   rpc GoTo(goToRequest) returns (Response.Empty) {}
+  /* Sets element specified by selector as the root for future selectors */
+  rpc SelectFrame(selectorRequest) returns (Response.Empty) {}
+  /* Resets the frame in which selectors are executed*/ 
+  rpc DeselectFrame(Empty) returns (Response.Empty) {}
   /* Gets title of currently open Playwright page */
   rpc GetTitle(Empty) returns (Response.String) {}
   /* Wraps playwrights page.fill to input text into input specified with selector */ 

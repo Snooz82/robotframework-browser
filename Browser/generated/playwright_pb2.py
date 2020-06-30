@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x10playwright.proto\"\x07\n\x05\x45mpty\"!\n\x11screenshotRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\"2\n\x12openBrowserRequest\x12\x0b\n\x03url\x18\x01 \x01(\t\x12\x0f\n\x07\x62rowser\x18\x02 \x01(\t\"\x1a\n\x0bgoToRequest\x12\x0b\n\x03url\x18\x01 \x01(\t\"3\n\x10inputTextRequest\x12\r\n\x05input\x18\x01 \x01(\t\x12\x10\n\x08selector\x18\x02 \x01(\t\";\n\x15getDomPropertyRequest\x12\x10\n\x08property\x18\x01 \x01(\t\x12\x10\n\x08selector\x18\x02 \x01(\t\"#\n\x0fselectorRequest\x12\x10\n\x08selector\x18\x01 \x01(\t\"h\n\x08Response\x1a\x14\n\x05\x45mpty\x12\x0b\n\x03log\x18\x01 \x01(\t\x1a#\n\x06String\x12\x0b\n\x03log\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\t\x1a!\n\x04\x42ool\x12\x0b\n\x03log\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\x08\x32\xc8\x05\n\nPlaywright\x12\x33\n\nScreenshot\x12\x12.screenshotRequest\x1a\x0f.Response.Empty\"\x00\x12\x35\n\x0bOpenBrowser\x12\x13.openBrowserRequest\x1a\x0f.Response.Empty\"\x00\x12)\n\x0c\x43loseBrowser\x12\x06.Empty\x1a\x0f.Response.Empty\"\x00\x12\'\n\x04GoTo\x12\x0c.goToRequest\x1a\x0f.Response.Empty\"\x00\x12&\n\x08GetTitle\x12\x06.Empty\x1a\x10.Response.String\"\x00\x12\x31\n\tInputText\x12\x11.inputTextRequest\x1a\x0f.Response.Empty\"\x00\x12<\n\x0eGetDomProperty\x12\x16.getDomPropertyRequest\x1a\x10.Response.String\"\x00\x12;\n\x0fGetBoolProperty\x12\x16.getDomPropertyRequest\x1a\x0e.Response.Bool\"\x00\x12\x36\n\x0eGetTextContent\x12\x10.selectorRequest\x1a\x10.Response.String\"\x00\x12$\n\x06GetUrl\x12\x06.Empty\x1a\x10.Response.String\"\x00\x12\x32\n\x0b\x43lickButton\x12\x10.selectorRequest\x1a\x0f.Response.Empty\"\x00\x12\x34\n\rCheckCheckbox\x12\x10.selectorRequest\x1a\x0f.Response.Empty\"\x00\x12\x36\n\x0fUncheckCheckbox\x12\x10.selectorRequest\x1a\x0f.Response.Empty\"\x00\x12$\n\x06Health\x12\x06.Empty\x1a\x10.Response.String\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x10playwright.proto\"\x07\n\x05\x45mpty\"!\n\x11screenshotRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\"2\n\x12openBrowserRequest\x12\x0b\n\x03url\x18\x01 \x01(\t\x12\x0f\n\x07\x62rowser\x18\x02 \x01(\t\"\x1a\n\x0bgoToRequest\x12\x0b\n\x03url\x18\x01 \x01(\t\"3\n\x10inputTextRequest\x12\r\n\x05input\x18\x01 \x01(\t\x12\x10\n\x08selector\x18\x02 \x01(\t\";\n\x15getDomPropertyRequest\x12\x10\n\x08property\x18\x01 \x01(\t\x12\x10\n\x08selector\x18\x02 \x01(\t\"#\n\x0fselectorRequest\x12\x10\n\x08selector\x18\x01 \x01(\t\"h\n\x08Response\x1a\x14\n\x05\x45mpty\x12\x0b\n\x03log\x18\x01 \x01(\t\x1a#\n\x06String\x12\x0b\n\x03log\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\t\x1a!\n\x04\x42ool\x12\x0b\n\x03log\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\x08\x32\xa8\x06\n\nPlaywright\x12\x33\n\nScreenshot\x12\x12.screenshotRequest\x1a\x0f.Response.Empty\"\x00\x12\x35\n\x0bOpenBrowser\x12\x13.openBrowserRequest\x1a\x0f.Response.Empty\"\x00\x12)\n\x0c\x43loseBrowser\x12\x06.Empty\x1a\x0f.Response.Empty\"\x00\x12\'\n\x04GoTo\x12\x0c.goToRequest\x1a\x0f.Response.Empty\"\x00\x12\x32\n\x0bSelectFrame\x12\x10.selectorRequest\x1a\x0f.Response.Empty\"\x00\x12*\n\rDeselectFrame\x12\x06.Empty\x1a\x0f.Response.Empty\"\x00\x12&\n\x08GetTitle\x12\x06.Empty\x1a\x10.Response.String\"\x00\x12\x31\n\tInputText\x12\x11.inputTextRequest\x1a\x0f.Response.Empty\"\x00\x12<\n\x0eGetDomProperty\x12\x16.getDomPropertyRequest\x1a\x10.Response.String\"\x00\x12;\n\x0fGetBoolProperty\x12\x16.getDomPropertyRequest\x1a\x0e.Response.Bool\"\x00\x12\x36\n\x0eGetTextContent\x12\x10.selectorRequest\x1a\x10.Response.String\"\x00\x12$\n\x06GetUrl\x12\x06.Empty\x1a\x10.Response.String\"\x00\x12\x32\n\x0b\x43lickButton\x12\x10.selectorRequest\x1a\x0f.Response.Empty\"\x00\x12\x34\n\rCheckCheckbox\x12\x10.selectorRequest\x1a\x0f.Response.Empty\"\x00\x12\x36\n\x0fUncheckCheckbox\x12\x10.selectorRequest\x1a\x0f.Response.Empty\"\x00\x12$\n\x06Health\x12\x06.Empty\x1a\x10.Response.String\"\x00\x62\x06proto3'
 )
 
 
@@ -484,7 +484,7 @@ _PLAYWRIGHT = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   serialized_start=402,
-  serialized_end=1114,
+  serialized_end=1210,
   methods=[
   _descriptor.MethodDescriptor(
     name='Screenshot',
@@ -523,9 +523,27 @@ _PLAYWRIGHT = _descriptor.ServiceDescriptor(
     serialized_options=None,
   ),
   _descriptor.MethodDescriptor(
+    name='SelectFrame',
+    full_name='Playwright.SelectFrame',
+    index=4,
+    containing_service=None,
+    input_type=_SELECTORREQUEST,
+    output_type=_RESPONSE_EMPTY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='DeselectFrame',
+    full_name='Playwright.DeselectFrame',
+    index=5,
+    containing_service=None,
+    input_type=_EMPTY,
+    output_type=_RESPONSE_EMPTY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
     name='GetTitle',
     full_name='Playwright.GetTitle',
-    index=4,
+    index=6,
     containing_service=None,
     input_type=_EMPTY,
     output_type=_RESPONSE_STRING,
@@ -534,7 +552,7 @@ _PLAYWRIGHT = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='InputText',
     full_name='Playwright.InputText',
-    index=5,
+    index=7,
     containing_service=None,
     input_type=_INPUTTEXTREQUEST,
     output_type=_RESPONSE_EMPTY,
@@ -543,7 +561,7 @@ _PLAYWRIGHT = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetDomProperty',
     full_name='Playwright.GetDomProperty',
-    index=6,
+    index=8,
     containing_service=None,
     input_type=_GETDOMPROPERTYREQUEST,
     output_type=_RESPONSE_STRING,
@@ -552,7 +570,7 @@ _PLAYWRIGHT = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetBoolProperty',
     full_name='Playwright.GetBoolProperty',
-    index=7,
+    index=9,
     containing_service=None,
     input_type=_GETDOMPROPERTYREQUEST,
     output_type=_RESPONSE_BOOL,
@@ -561,7 +579,7 @@ _PLAYWRIGHT = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetTextContent',
     full_name='Playwright.GetTextContent',
-    index=8,
+    index=10,
     containing_service=None,
     input_type=_SELECTORREQUEST,
     output_type=_RESPONSE_STRING,
@@ -570,7 +588,7 @@ _PLAYWRIGHT = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetUrl',
     full_name='Playwright.GetUrl',
-    index=9,
+    index=11,
     containing_service=None,
     input_type=_EMPTY,
     output_type=_RESPONSE_STRING,
@@ -579,7 +597,7 @@ _PLAYWRIGHT = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='ClickButton',
     full_name='Playwright.ClickButton',
-    index=10,
+    index=12,
     containing_service=None,
     input_type=_SELECTORREQUEST,
     output_type=_RESPONSE_EMPTY,
@@ -588,7 +606,7 @@ _PLAYWRIGHT = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='CheckCheckbox',
     full_name='Playwright.CheckCheckbox',
-    index=11,
+    index=13,
     containing_service=None,
     input_type=_SELECTORREQUEST,
     output_type=_RESPONSE_EMPTY,
@@ -597,7 +615,7 @@ _PLAYWRIGHT = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='UncheckCheckbox',
     full_name='Playwright.UncheckCheckbox',
-    index=12,
+    index=14,
     containing_service=None,
     input_type=_SELECTORREQUEST,
     output_type=_RESPONSE_EMPTY,
@@ -606,7 +624,7 @@ _PLAYWRIGHT = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='Health',
     full_name='Playwright.Health',
-    index=13,
+    index=15,
     containing_service=None,
     input_type=_EMPTY,
     output_type=_RESPONSE_STRING,

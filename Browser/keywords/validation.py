@@ -30,7 +30,6 @@ class Validation:
     def page_should_have(self, selector: str, text=""):
         """Verifies that current page contains an element matching ``selector``.
             Optionally verifies that the element contains ``text``
-            Page_should_contain keyword is syntactic sugar for page_should_have
 
         """
         with self.playwright.grpc_channel() as stub:
@@ -48,7 +47,7 @@ class Validation:
 
     @keyword
     def page_should_contain(self, text: str):
-        """Verifies that current page contains ``text``. """
+        """ Verifies that current page contains ``text``. """
         self.page_should_have("text=" + text)
 
     class CheckboxState(Enum):

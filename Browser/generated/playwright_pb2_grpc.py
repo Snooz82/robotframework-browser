@@ -33,6 +33,16 @@ class PlaywrightStub(object):
                 request_serializer=playwright__pb2.goToRequest.SerializeToString,
                 response_deserializer=playwright__pb2.Response.Empty.FromString,
                 )
+        self.SelectFrame = channel.unary_unary(
+                '/Playwright/SelectFrame',
+                request_serializer=playwright__pb2.selectorRequest.SerializeToString,
+                response_deserializer=playwright__pb2.Response.Empty.FromString,
+                )
+        self.DeselectFrame = channel.unary_unary(
+                '/Playwright/DeselectFrame',
+                request_serializer=playwright__pb2.Empty.SerializeToString,
+                response_deserializer=playwright__pb2.Response.Empty.FromString,
+                )
         self.GetTitle = channel.unary_unary(
                 '/Playwright/GetTitle',
                 request_serializer=playwright__pb2.Empty.SerializeToString,
@@ -108,6 +118,20 @@ class PlaywrightServicer(object):
 
     def GoTo(self, request, context):
         """Opens the url in currently open Playwright page 
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SelectFrame(self, request, context):
+        """Sets element specified by selector as the root for future selectors 
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeselectFrame(self, request, context):
+        """Resets the frame in which selectors are executed
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -204,6 +228,16 @@ def add_PlaywrightServicer_to_server(servicer, server):
             'GoTo': grpc.unary_unary_rpc_method_handler(
                     servicer.GoTo,
                     request_deserializer=playwright__pb2.goToRequest.FromString,
+                    response_serializer=playwright__pb2.Response.Empty.SerializeToString,
+            ),
+            'SelectFrame': grpc.unary_unary_rpc_method_handler(
+                    servicer.SelectFrame,
+                    request_deserializer=playwright__pb2.selectorRequest.FromString,
+                    response_serializer=playwright__pb2.Response.Empty.SerializeToString,
+            ),
+            'DeselectFrame': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeselectFrame,
+                    request_deserializer=playwright__pb2.Empty.FromString,
                     response_serializer=playwright__pb2.Response.Empty.SerializeToString,
             ),
             'GetTitle': grpc.unary_unary_rpc_method_handler(
@@ -326,6 +360,38 @@ class Playwright(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Playwright/GoTo',
             playwright__pb2.goToRequest.SerializeToString,
+            playwright__pb2.Response.Empty.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SelectFrame(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Playwright/SelectFrame',
+            playwright__pb2.selectorRequest.SerializeToString,
+            playwright__pb2.Response.Empty.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeselectFrame(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Playwright/DeselectFrame',
+            playwright__pb2.Empty.SerializeToString,
             playwright__pb2.Response.Empty.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)

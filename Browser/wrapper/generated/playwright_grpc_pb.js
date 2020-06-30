@@ -161,6 +161,30 @@ goTo: {
     responseSerialize: serialize_Response_Empty,
     responseDeserialize: deserialize_Response_Empty,
   },
+  // Sets element specified by selector as the root for future selectors 
+selectFrame: {
+    path: '/Playwright/SelectFrame',
+    requestStream: false,
+    responseStream: false,
+    requestType: playwright_pb.selectorRequest,
+    responseType: playwright_pb.Response.Empty,
+    requestSerialize: serialize_selectorRequest,
+    requestDeserialize: deserialize_selectorRequest,
+    responseSerialize: serialize_Response_Empty,
+    responseDeserialize: deserialize_Response_Empty,
+  },
+  // Resets the frame in which selectors are executed
+deselectFrame: {
+    path: '/Playwright/DeselectFrame',
+    requestStream: false,
+    responseStream: false,
+    requestType: playwright_pb.Empty,
+    responseType: playwright_pb.Response.Empty,
+    requestSerialize: serialize_Empty,
+    requestDeserialize: deserialize_Empty,
+    responseSerialize: serialize_Response_Empty,
+    responseDeserialize: deserialize_Response_Empty,
+  },
   // Gets title of currently open Playwright page 
 getTitle: {
     path: '/Playwright/GetTitle',

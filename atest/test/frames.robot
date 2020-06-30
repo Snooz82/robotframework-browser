@@ -10,9 +10,10 @@ ${IFRAMES}	localhost:7272/frames/iframes.html
 
 *** Test Cases ***
 Page Should Have Content In Frame
-    Pass Execution  Functionality Not Implemented yet
-    Page Should Have	css=#right	"You're looking at right."
-    Page Should Have 	css=#left	"Links"
+    Select Frame  right
+    Page Should Contain  "You're looking at right."
+    Select Frame  left
+    Page Should Contain  "Links"
 
 Page Should Have iframe content
     Pass Execution  Functionality Not Implemented yet

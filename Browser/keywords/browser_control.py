@@ -60,7 +60,24 @@ class Control:
         """
         if path is None:
             path = self.library.get_screenshot_path
-        logger.info(f"Taking screenshot into ${path}")
+        logger.info(f"Taking screenshot into {path}")
         with self.playwright.grpc_channel() as stub:
             response = stub.Screenshot(playwright_pb2.screenshotRequest(path=path))
+            logger.info(response.log)
+
+    @keyword
+    def select_frame(self, name: str):
+        """ Focuses future Keywords within frame named ``name``"""
+        with self.playwright.grpc_channel() as stub:
+            response = stub.SelectFrame(
+                # TODO: rename this request argument
+                playwright_pb2.selectorRequest(selector=name)
+            )
+            logger.info(response.log)
+
+    @keyword
+    def deselect_frame(self):
+        """ Resets Keywords out of frame """
+        with self.playwright.grpc_channel() as stub:
+            response = stub.DeselectFrame(playwright_pb2.Empty())
             logger.info(response.log)
