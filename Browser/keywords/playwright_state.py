@@ -5,9 +5,9 @@ from typing import Dict, List, Optional, TypedDict
 from robotlibcore import keyword  # type: ignore
 
 from ..base import LibraryComponent
+from ..generated.playwright_pb2 import Request
 from ..utils.meta_python import locals_to_params
 from ..utils.time_conversion import timestr_to_millisecs
-from ..generated.playwright_pb2 import Request
 
 
 class SupportedBrowsers(Enum):
@@ -29,7 +29,7 @@ class PlaywrightState(LibraryComponent):
     @keyword(tags=["BrowserControl"])
     def open_browser(
         self,
-        url=None,
+        url: Optional[str] = None,
         browser: SupportedBrowsers = SupportedBrowsers.chromium,
         headless: bool = True,
     ):
