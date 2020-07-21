@@ -1,16 +1,16 @@
 from Browser import Browser
+import inspect
 
 br = Browser()
 keywords = br.get_keyword_names()
 function_list = list()
 for keyword in keywords:
+    keyword_name = keyword
     if ' ' in keyword:
         for key in br.attributes.keys():
             if keyword == br.attributes[key].robot_name and ' ' not in key:
                 keyword_name = key
                 break
-    else:
-        keyword_name = keyword
     args = br.get_keyword_arguments(keyword)
     types = br.get_keyword_types(keyword)
     args_str = ""
@@ -54,24 +54,16 @@ for keyword in keywords:
 function_list.sort()
 
 with open('__init__.pyi', 'w') as stub_file:
-    stub_file.write("""from concurrent.futures import Future
+    stub_file.write(f"""from concurrent.futures import Future
 from typing import Union, Any, Dict, List, Optional
 
-from .assertion_engine import (
-    bool_verify_assertion,
-    verify_assertion,
-    list_verify_assertion,
-    dict_verify_assertion,
-    int_dict_verify_assertion,
-    int_str_verify_assertion,
-    AssertionOperator,
-)
+from .assertion_engine import AssertionOperator
 from .keywords.input import SelectAttribute, MouseButton, KeyboardModifier
 from .keywords.playwright_state import SupportedBrowsers, ViewportDimensions, ColorScheme
 from .keywords.waiter import ElementState
-from .playwright import Playwright
-from .version import VERSION
 
 
-class Browser:\n""")
+class Browser:
+
+    def __init__(self, {str(inspect.signature(br.__init__))[1:]}: ...\n""")
     stub_file.writelines(function_list)

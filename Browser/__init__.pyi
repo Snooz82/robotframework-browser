@@ -1,15 +1,7 @@
 from concurrent.futures import Future
 from typing import Union, Any, Dict, List, Optional
 
-from .assertion_engine import (
-    bool_verify_assertion,
-    verify_assertion,
-    list_verify_assertion,
-    dict_verify_assertion,
-    int_dict_verify_assertion,
-    int_str_verify_assertion,
-    AssertionOperator,
-)
+from .assertion_engine import AssertionOperator
 from .keywords.input import SelectAttribute, MouseButton, KeyboardModifier
 from .keywords.playwright_state import (
     SupportedBrowsers,
@@ -17,10 +9,9 @@ from .keywords.playwright_state import (
     ColorScheme,
 )
 from .keywords.waiter import ElementState
-from .playwright import Playwright
-from .version import VERSION
 
 class Browser:
+    def __init__(self, timeout="10s", enable_playwright_debug: bool = False): ...
     def add_style_tag(self, content: str): ...
     def auto_activate_pages(self): ...
     def check_checkbox(self, selector: str): ...
