@@ -1,6 +1,6 @@
 *** Settings ***
 Resource          imports.resource
-Test Setup        Create Page    ${LOGIN_URL}
+Suite Setup       New Page    ${LOGIN_URL}
 
 *** Variables ***
 ${UserNameLabel}=    label[for="username_field"]
@@ -47,12 +47,22 @@ Get Attribute With Nonmatching Selector
 
 Get Element Count
     ${count}=    Get Element Count    h1
-    Should Be Equal    ${count}    1
+    Should Be Equal    ${count}    ${1}
     ${count}=    Get Element Count    label
-    Should Be Equal    ${count}    2
+    Should Be Equal    ${count}    ${2}
     ${count}=    Get Element Count    not-existing
-    Should Be Equal    ${count}    0
+    Should Be Equal    ${count}    ${0}
 
 Get Element Count and Assert
     Get Element Count    h1    ==    1
+    Get Element Count    h1    ==    ${1}
+    Get Element Count    label    validate    value == 2
     Get Element Count    label    >    1
+    Get Element Count    not-existing    ==
+    ${promise}=    Promise to    Get Element Count    label
+    ${count}=    Wait for    ${promise}
+    should be equal    ${count}    ${2}
+
+Get Style and Assert
+    Get Style    h1    ALL    *=    align-content
+    Get Style    h1    align-content    ==    normal

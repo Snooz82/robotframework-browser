@@ -26,12 +26,12 @@ class PlaywrightState(LibraryComponent):
     """Keywords to manage Playwright side Browsers, Contexts and Pages.
     """
 
-    @keyword
+    @keyword(tags=["BrowserControl"])
     def open_browser(
         self,
         url=None,
         browser: SupportedBrowsers = SupportedBrowsers.chromium,
-        headless: Optional[bool] = True,
+        headless: bool = True,
     ):
         """Opens a new browser instance.
 
@@ -50,11 +50,11 @@ class PlaywrightState(LibraryComponent):
 
         """
 
-        self.create_browser(browser, headless=headless)
-        self.create_context()
-        self.create_page(url)
+        self.new_browser(browser, headless=headless)
+        self.new_context()
+        self.new_page(url)
 
-    @keyword
+    @keyword(tags=["BrowserControl"])
     def close_browser(self):
         """Closes the current browser. Activated browser is set to first active browser.
         """
@@ -62,44 +62,44 @@ class PlaywrightState(LibraryComponent):
             response = stub.CloseBrowser(Request.Empty())
             self.info(response.log)
 
-    @keyword
+    @keyword(tags=["BrowserControl"])
     def close_all_browsers(self):
         """Closes all open browsers."""
         with self.playwright.grpc_channel() as stub:
             response = stub.CloseAllBrowsers(Request().Empty())
             self.info(response.log)
 
-    @keyword
+    @keyword(tags=["BrowserControl"])
     def close_context(self):
         """Closes the current Context. Activated context is set to first active context."""
         with self.playwright.grpc_channel() as stub:
             response = stub.CloseContext(Request().Empty())
             self.info(response.log)
 
-    @keyword
+    @keyword(tags=["BrowserControl"])
     def close_page(self):
         """Closes the current Page. Activated page is set to first active page."""
         with self.playwright.grpc_channel() as stub:
             response = stub.ClosePage(Request().Empty())
             self.info(response.log)
 
-    @keyword
-    def create_browser(
+    @keyword(tags=["BrowserControl"])
+    def new_browser(
         self,
         browser: SupportedBrowsers = SupportedBrowsers.chromium,
+        headless: bool = True,
         executablePath: Optional[str] = None,
         args: Optional[List[str]] = None,
         ignoreDefaultArgs: Optional[List[str]] = None,
-        handleSIGINT: Optional[bool] = None,
-        handleSIGTERM: Optional[bool] = None,
-        handleSIGHUP: Optional[bool] = None,
-        timeout: Optional[str] = "30 seconds",
-        env: Optional[Dict] = None,
-        headless: Optional[bool] = None,
-        devtools: Optional[bool] = None,
         proxy: Optional[Dict] = None,
         downloadsPath: Optional[str] = None,
-        slowMo: Optional[str] = "0 seconds",
+        handleSIGINT: bool = True,
+        handleSIGTERM: bool = True,
+        handleSIGHUP: bool = True,
+        timeout: str = "30 seconds",
+        env: Optional[Dict] = None,
+        devtools: bool = False,
+        slowMo: str = "0 seconds",
     ):
         """Create a new playwright Browser with specified options.
 
@@ -119,58 +119,115 @@ class PlaywrightState(LibraryComponent):
 
         with self.playwright.grpc_channel() as stub:
 
-            response = stub.CreateBrowser(
+            response = stub.NewBrowser(
                 Request().Browser(browser=browser.value, rawOptions=options)
             )
             self.info(response.log)
             return response.body
 
-    @keyword
-    def create_context(
+    @keyword(tags=["BrowserControl"])
+    def new_context(
         self,
-        hideRfBrowser=False,
+        hideRfBrowser: bool = False,
+        acceptDownloads: bool = False,
+        ignoreHTTPSErrors: bool = False,
+        bypassCSP: bool = False,
         viewport: Optional[ViewportDimensions] = None,
-        ignoreHTTPSErrors: Optional[bool] = None,
-        javaScriptEnabled: Optional[bool] = None,
-        bypassCSP: Optional[bool] = None,
         userAgent: Optional[str] = None,
-        locale: Optional[str] = None,
+        deviceScaleFactor: float = 1.0,
+        isMobile: bool = False,
+        hasTouch: bool = False,
+        javaScriptEnabled: bool = True,
         timezoneId: Optional[str] = None,
         geolocation: Optional[Dict] = None,
+        locale: Optional[str] = None,
         permissions: Optional[List[str]] = None,
         extraHTTPHeaders: Optional[Dict[str, str]] = None,
-        offline: Optional[bool] = None,
+        offline: bool = False,
         httpCredentials: Optional[Dict] = None,
-        deviceScaleFactor: Optional[float] = None,
-        isMobile: Optional[bool] = None,
-        hasTouch: Optional[bool] = None,
         colorScheme: Optional[ColorScheme] = None,
-        acceptDownloads: Optional[bool] = None,
     ):
         """Create a new BrowserContext with specified options.
 
-        Returns a stable identifier for the created context.
+        Returns a stable identifier for the created context
+        that can be used in `Switch Context`.
 
-        Value of ``viewport`` should be an object or a string representation of an object like {'height': 720, 'width': 1280}
+        ``acceptDownloads`` <bool> Whether to automatically downloadall the attachments.
+        Defaults to false where all the downloads are canceled.
+
+        ``ignoreHTTPSErrors`` <bool> Whether to ignore HTTPS errors during navigation.
+        Defaults to false.
+
+        ``bypassCSP`` <bool> Toggles bypassing page's Content-Security-Policy.
+
+        ``viewport`` <dict> Sets a consistent viewport for each page.
+        Defaults to an ``{'width': 1280, 'height': 720}`` viewport.
+        Value of ``viewport`` can be a dict or a string
+        representation of a dictionary.
+
+        ``userAgent`` <str> Specific user agent to use in this context.
+
+        ``deviceScaleFactor`` <float> Specify device scale factor
+        (can be thought of as dpr). Defaults to 1.
+
+        ``isMobile`` <bool> Whether the meta viewport tag is taken into account
+        and touch events are enabled. Defaults to false. Not supported in Firefox.
+
+        ``hasTouch`` <bool> Specifies if viewport supports touch events. Defaults to false.
+
+        ``javaScriptEnabled`` <bool> Whether or not to enable JavaScript in the context.
+        Defaults to true.
+
+        ``timezoneId`` <str> Changes the timezone of the context.
+        See [https://source.chromium.org/chromium/chromium/deps/icu.git/+/faee8bc70570192d82d2978a71e2a615788597d1:source/data/misc/metaZones.txt?originalUrl=https:%2F%2Fcs.chromium.org%2F|ICU’s metaZones.txt]
+        for a list of supported timezone IDs.
+
+        ``geolocation`` <dict> ``{'latitude': 59.95, 'longitude': 30.31667}``
+        - ``latitude`` <number> Latitude between -90 and 90. *required*
+        - ``longitude`` <number> Longitude between -180 and 180. *required*
+        - ``accuracy`` Optional <number> Non-negative accuracy value. Defaults to 0.
+
+        ``locale`` <str> Specify user locale, for example ``en-GB``, ``de-DE``, etc.
+        Locale will affect ``navigator.language`` value, ``Accept-Language`` request header value
+        as well as number and date formatting rules.
+
+        ``permissions`` <list[str]> A list of permissions to grant to all pages in this context.
+        See [https://github.com/microsoft/playwright/blob/master/docs/api.md#browsercontextgrantpermissionspermissions-options|grantPermissions] for more details.
+
+        ``extraHTTPHeaders`` <dict[str, str]> A dictionary containing additional HTTP headers
+        to be sent with every request. All header values must be strings.
+
+        ``offline`` <bool> Whether to emulate network being offline. Defaults to ``False``.
+
+        ``httpCredentials`` <Object> Credentials for HTTP authentication.
+        - example: ``{'username': 'admin', 'password': '123456'}``
+        - ``username`` <str>
+        - ``password`` <str>
+
+        ``colorScheme`` <"dark"|"light"|"no-preference"> Emulates 'prefers-colors-scheme'
+        media feature, supported values are 'light', 'dark', 'no-preference'.
+        See [https://github.com/microsoft/playwright/blob/master/docs/api.md#pageemulatemediaoptions|emulateMedia(options)]
+        for more details. Defaults to ``light``.
 
         A BrowserContext is the Playwright object that controls a single browser profile.
         Within a context caches and cookies are shared.
         See [https://github.com/microsoft/playwright/blob/master/docs/api.md#browsernewcontextoptions|Playwright browser.newContext]
         for a list of supported options.
+
         If there's no open Browser will open one. Does not create pages.
         """
         params = locals_to_params(locals())
         options = json.dumps(params, default=str)
         self.info(options)
         with self.playwright.grpc_channel() as stub:
-            response = stub.CreateContext(
+            response = stub.NewContext(
                 Request().Context(hideRfBrowser=hideRfBrowser, rawOptions=options)
             )
             self.info(response.log)
             return response.body
 
-    @keyword
-    def create_page(self, url: Optional[str] = None):
+    @keyword(tags=["BrowserControl"])
+    def new_page(self, url: Optional[str] = None):
         """Open a new Page. A Page is the Playwright equivalent to a tab.
 
             Returns a stable identifier for the created page.
@@ -179,11 +236,11 @@ class PlaywrightState(LibraryComponent):
         """
 
         with self.playwright.grpc_channel() as stub:
-            response = stub.CreatePage(Request().Url(url=url))
+            response = stub.NewPage(Request().Url(url=url))
             self.info(response.log)
             return response.body
 
-    @keyword
+    @keyword(tags=["BrowserControl"])
     def switch_page(self, index: int):
         """Switches the active browser page to another open page by ``index``.
 
@@ -196,14 +253,14 @@ class PlaywrightState(LibraryComponent):
             self.info(response.log)
             return response.body
 
-    @keyword
+    @keyword(tags=["BrowserControl"])
     def auto_activate_pages(self):
         """Toggles automatically changing active page to latest opened page."""
         with self.playwright.grpc_channel() as stub:
             response = stub.AutoActivatePages(Request().Empty())
             self.info(response.log)
 
-    @keyword
+    @keyword(tags=["BrowserControl"])
     def switch_browser(self, index: int):
         """Switches the currently active Browser to another open Browser.
 
@@ -214,7 +271,7 @@ class PlaywrightState(LibraryComponent):
             self.info(response.log)
             return response.body
 
-    @keyword
+    @keyword(tags=["BrowserControl"])
     def switch_context(self, index: int):
         """ Switches the active BrowserContext to another open context.
 

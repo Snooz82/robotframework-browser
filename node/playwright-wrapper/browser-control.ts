@@ -2,7 +2,7 @@ import { sendUnaryData, ServerUnaryCall } from 'grpc';
 import { BrowserContext, Page } from 'playwright';
 
 import { Response, Request } from './generated/playwright_pb';
-import { invokeOnPage, exists } from './playwirght-util';
+import { invokeOnPage, exists } from './playwirght-invoke';
 import { emptyWithLog, stringResponse } from './response-util';
 
 export async function goTo(
@@ -52,7 +52,7 @@ export async function setViewportSize(
     callback: sendUnaryData<Response.Empty>,
     page?: Page,
 ) {
-    const size = { height: call.request.getHeight(), width: call.request.getWidth() };
+    const size = { width: call.request.getWidth(), height: call.request.getHeight() };
     await invokeOnPage(page, callback, 'setViewportSize', size);
     callback(null, emptyWithLog(`Set viewport size to: ${size}`));
 }

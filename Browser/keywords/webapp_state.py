@@ -9,7 +9,7 @@ from ..generated.playwright_pb2 import Request
 
 
 class WebAppState(LibraryComponent):
-    @keyword
+    @keyword(name="localStorage get", tags=["WebAppState", "Assertion", "Getter"])
     def local_storage_get(
         self,
         key: str,
@@ -24,14 +24,14 @@ class WebAppState(LibraryComponent):
                 Request().JavascriptCode(script=f'window.localStorage.getItem("{key}")')
             )
             self.info(response.log)
-        return verify_assertion(
-            json.loads(response.result),
-            assertion_operator,
-            assertion_expected,
-            "localStorage ",
-        )
+            return verify_assertion(
+                json.loads(response.result),
+                assertion_operator,
+                assertion_expected,
+                "localStorage ",
+            )
 
-    @keyword
+    @keyword(name="localStorage set", tags=["WebAppState"])
     def local_storage_set(self, key: str, value: str):
         """
         Save data to localStorage
@@ -44,7 +44,7 @@ class WebAppState(LibraryComponent):
             )
             self.info(response.log)
 
-    @keyword
+    @keyword(name="localStorage remove", tags=["WebAppState"])
     def local_storage_remove(self, key: str):
         """
         Remove saved data with key from localStorage
@@ -57,7 +57,7 @@ class WebAppState(LibraryComponent):
             )
             self.info(response.log)
 
-    @keyword
+    @keyword(name="localStorage clear", tags=["WebAppState"])
     def local_storage_clear(self):
         """
         Remove all saved data from localStorage
@@ -68,7 +68,7 @@ class WebAppState(LibraryComponent):
             )
             self.info(response.log)
 
-    @keyword
+    @keyword(name="sessionStorage get", tags=["WebAppState", "Assertion", "Getter"])
     def session_storage_get(
         self,
         key: str,
@@ -85,14 +85,14 @@ class WebAppState(LibraryComponent):
                 )
             )
             self.info(response.log)
-        return verify_assertion(
-            json.loads(response.result),
-            assertion_operator,
-            assertion_expected,
-            "sessionStorage ",
-        )
+            return verify_assertion(
+                json.loads(response.result),
+                assertion_operator,
+                assertion_expected,
+                "sessionStorage ",
+            )
 
-    @keyword
+    @keyword(name="sessionStorage set", tags=["WebAppState"])
     def session_storage_set(self, key: str, value: str):
         """
         Save data to sessionStorage
@@ -105,7 +105,7 @@ class WebAppState(LibraryComponent):
             )
             self.info(response.log)
 
-    @keyword
+    @keyword(name="sessionStorage remove", tags=["WebAppState"])
     def session_storage_remove(self, key: str):
         """
         Remove saved data with key from sessionStorage
@@ -118,7 +118,7 @@ class WebAppState(LibraryComponent):
             )
             self.info(response.log)
 
-    @keyword
+    @keyword(name="sessionStorage clear", tags=["WebAppState"])
     def session_storage_clear(self):
         """
         Remove all saved data from sessionStorage
