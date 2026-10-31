@@ -1553,3 +1553,21 @@ def test_without_page_information_nothing_is_switched():
     s.handle_event("added", CLICK)
     s.handle_event("added", FILL)
     assert rows(s) == ["Click | #b", "Fill Text | #n | Alice"]
+
+
+def test_undo_keeps_the_id_an_earlier_switch_returned():
+    s = recording_on_pages()
+    open_popup(s)
+    s.handle_event("added", FILL, FIRST)
+    s.handle_event("added", FILL, POPUP)
+    s.handle_command({"cmd": "undo"})
+    s.handle_command({"cmd": "undo"})
+    assert rows(s) == ["Click | #b", "Switch Page | NEW"]
+    s.handle_event("added", CLICK, FIRST)
+    assert rows(s) == [
+        "Click | #b",
+        "${page}= | Switch Page | NEW",
+        "Switch Page | ${page}",
+        "Click | #b",
+    ]
+    assert s.toolbar_state()["notice"] is None

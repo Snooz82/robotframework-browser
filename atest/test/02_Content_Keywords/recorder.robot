@@ -359,6 +359,11 @@ The Toolbar Works On A Strict Page
     Should Be Equal    ${host}    ${{['fixed', '1', 'none']}}
     Send Command    {cmd: 'stop'}
     Wait For    ${promise}
+    ${promise} =    Promise To    Record Keyword    Styled Again    ${None}
+    Toolbar State Should Be    recording
+    Get Element Count    css=rfb-recorder-toolbar    ==    1
+    Send Command    {cmd: 'stop'}
+    Wait For    ${promise}
 
 A Resize Released On The Page Records No Click
     Keep The Closed Toolbar Root Reachable
@@ -394,6 +399,31 @@ Keys After A Click On The Toolbar Text Are Not Recorded
     Toolbar Calls Should Be    Fill Text
     Send Command    {cmd: 'stop'}
     Wait For    ${promise}
+
+Page Clicks Without A Pointer Still Work After A Toolbar Click
+    Keep The Closed Toolbar Root Reachable
+    Evaluate JavaScript
+    ...    ${None}
+    ...    () => { const b = document.createElement('button'); b.id = 'counter'; b.textContent = 'Count'; window.clicks = 0; b.addEventListener('click', () => window.clicks++); document.body.prepend(b); }
+    ${promise} =    Promise To    Record Keyword    Keyboard Click    ${None}
+    Toolbar State Should Be    recording
+    ${title} =    Evaluate JavaScript
+    ...    ${None}
+    ...    () => { const r = window.toolbarRoot.getElementById('title').getBoundingClientRect(); return [r.x + 5, r.y + r.height / 2]; }
+    Mouse Button    click    ${title}[0]    ${title}[1]
+    Focus    id=counter
+    Keyboard Key    press    Enter
+    ${clicks} =    Evaluate JavaScript    ${None}    () => window.clicks
+    Should Be Equal As Integers    ${clicks}    1
+    ${save} =    Evaluate JavaScript
+    ...    ${None}
+    ...    () => { const r = window.toolbarRoot.getElementById('finish').getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; }
+    Mouse Button    click    ${save}[0]    ${save}[1]
+    Wait For    ${promise}
+    Focus    id=counter
+    Keyboard Key    press    Enter
+    ${clicks} =    Evaluate JavaScript    ${None}    () => window.clicks
+    Should Be Equal As Integers    ${clicks}    2
 
 Save Ends A Record Keyword Session
     Keep The Closed Toolbar Root Reachable

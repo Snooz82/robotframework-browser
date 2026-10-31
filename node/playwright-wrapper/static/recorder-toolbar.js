@@ -54,8 +54,11 @@
         // A page that requires Trusted Types (YouTube, Google sign-in) rejects a string
         // for `innerHTML`, so the toolbar's own markup goes through a policy of its own.
         // A page that allows only the policy names it lists cannot show the toolbar.
+        // Each install names its policy anew: a page may forbid a name used twice.
         const policy = window.trustedTypes
-            ? window.trustedTypes.createPolicy('rfb-recorder-toolbar', { createHTML: (markup) => markup })
+            ? window.trustedTypes.createPolicy(`rfb-recorder-toolbar-${Math.random().toString(36).slice(2, 10)}`, {
+                  createHTML: (markup) => markup,
+              })
             : null;
         const html = (markup) => (policy ? policy.createHTML(markup) : markup);
         const icon = (body) =>
@@ -732,17 +735,29 @@
         // After a press in the toolbar, two events of it reach the page: the click of
         // a press released outside it (a resize) goes to what both have in common, and
         // a key typed after a click on its text, which takes no focus, to the body.
+        // Such keys are dropped until the next press on the page; the click only
+        // until the press ends.
         let pressedInToolbar = false;
-        window.addEventListener('pointerdown', (event) => (pressedInToolbar = fromToolbar(event)), true);
+        let releasePending = false;
+        const notePress = (event) => {
+            pressedInToolbar = fromToolbar(event);
+            releasePending = pressedInToolbar;
+        };
+        const endPress = () => (releasePending = false);
+        window.addEventListener('pointerdown', notePress, true);
+        window.addEventListener('pointercancel', endPress, true);
         const unfocused = (event) => event.target === document.body || event.target === document.documentElement;
-        const ownedByToolbar = (event) => fromToolbar(event) || (pressedInToolbar && unfocused(event));
         const RELEASE_EVENTS = ['click', 'dblclick', 'auxclick'];
         const dropRelease = (event) => {
-            if (pressedInToolbar && !fromToolbar(event)) event.stopImmediatePropagation();
+            if (releasePending && !fromToolbar(event)) event.stopImmediatePropagation();
+            endPress();
         };
         RELEASE_EVENTS.forEach((type) => window.addEventListener(type, dropRelease, true));
         const isolate = (event) => {
-            if (!ownedByToolbar(event)) return;
+            if (!fromToolbar(event)) {
+                if (pressedInToolbar && unfocused(event)) event.stopImmediatePropagation();
+                return;
+            }
             event.stopImmediatePropagation();
             if (event.type === 'keydown' && event.key === 'Escape') {
                 escapeDialog();
@@ -1192,6 +1207,9 @@
             window.removeEventListener('pointerup', endResize);
             window.removeEventListener('pointercancel', endResize);
             ISOLATED_EVENTS.forEach((type) => window.removeEventListener(type, isolate, true));
+            RELEASE_EVENTS.forEach((type) => window.removeEventListener(type, dropRelease, true));
+            window.removeEventListener('pointerdown', notePress, true);
+            window.removeEventListener('pointercancel', endPress, true);
             PAGE_CLICK_EVENTS.forEach((type) => window.removeEventListener(type, notePageClick, true));
             overlayWatch.disconnect();
             window.removeEventListener('pointerup', release);

@@ -512,6 +512,15 @@ def test_a_read_only_file_is_not_overwritten(tmp_path):
         path.chmod(0o644)
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="no POSIX permissions")
+def test_a_new_file_gets_the_permissions_of_any_new_file(tmp_path):
+    reference = tmp_path / "reference.txt"
+    reference.write_text("")
+    path = tmp_path / "k.resource"
+    FileTarget(path).save(keyword())
+    assert path.stat().st_mode & 0o777 == reference.stat().st_mode & 0o777
+
+
 def test_a_missing_folder_is_named_in_the_error(tmp_path):
     with pytest.raises(PermissionError, match="does not exist"):
         FileTarget(tmp_path / "missing" / "k.resource").save(keyword())

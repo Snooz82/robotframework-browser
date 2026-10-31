@@ -106,6 +106,8 @@ class Call:
     args: list[Value]
     assign: str | None = None
     comment: bool = False
+    #: The page a Switch Page left (a Playwright page guid): it returns that page's id.
+    leaves: str | None = None
 
     def rendered_args(self) -> list[str]:
         """The argument cells as written into the file."""
@@ -169,17 +171,18 @@ class RecordedKeyword:
         group = self._last_action()
         return None if group is None else group.page
 
-    def contains(self, call: Call) -> bool:
-        return any(c is call for c in self.calls())
+    def switch_leaving(self, page: str) -> Call | None:
+        """A Switch Page of the keyword that left ``page``, one with a variable first."""
+        switches = [c for c in self.calls() if c.leaves == page]
+        assigned = [c for c in switches if c.assign]
+        candidates = assigned or switches
+        return candidates[-1] if candidates else None
 
-    def drop_unused_assigns(self, calls: list[Call]) -> None:
-        """Remove the assignment of those ``calls`` no other Keyword Call uses."""
-        used: set[str] = set()
+    def drop_unused_page_ids(self) -> None:
+        """Remove the assignment of a Switch Page no Keyword Call uses any more."""
+        used = self._used_names()
         for call in self.calls():
-            for value in call.args:
-                used |= value.references()
-        for call in calls:
-            if call.assign and call.assign not in used:
+            if call.leaves is not None and call.assign not in used:
                 call.assign = None
 
     def add_picked_selector(self, selector: str) -> None:
@@ -376,11 +379,16 @@ class RecordedKeyword:
             [*_nonempty(prefix), refs[0], *_nonempty(suffix)], old.selectable, old.named
         )
 
-    def _drop_unused(self) -> None:
+    def _used_names(self) -> set[str]:
+        """The arguments and variables the Keyword Calls' values refer to."""
         used: set[str] = set()
         for call in self.calls():
             for value in call.args:
                 used |= value.references()
+        return used
+
+    def _drop_unused(self) -> None:
+        used = self._used_names()
         self.arguments = [a for a in self.arguments if a.name in used]
 
 

@@ -250,6 +250,10 @@ class FileTarget:
         try:
             if self.path.exists():
                 shutil.copymode(self.path, temp)
+            else:
+                # The temporary file is private (0600); a new file gets the
+                # permissions any other new file would.
+                temp.chmod(0o666 & ~_umask())
             temp.replace(self.path)
         except BaseException:
             temp.unlink(missing_ok=True)
@@ -269,6 +273,12 @@ class FileTarget:
         section = KeywordSection(header=header)
         model.sections.append(section)
         return section, True, separated
+
+
+def _umask() -> int:
+    mask = os.umask(0)
+    os.umask(mask)
+    return mask
 
 
 def _parse_block(text: str) -> Keyword:

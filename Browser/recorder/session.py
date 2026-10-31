@@ -120,8 +120,6 @@ class RecorderSession:
         self._page: str | None = None
         #: The page a keyword starts on: where the last one ended.
         self._start_page: str | None = None
-        #: Per page, the Switch Page that left it: it returns that page's id.
-        self._leaving: dict[str, Call] = {}
         if fixed_name is not None:
             error = self._guard.error(fixed_name, taken=target.existing_names())
             if error:
@@ -309,14 +307,14 @@ class RecorderSession:
     def _left(self, switch: Call, page: str | None) -> None:
         """``switch`` left the keyword's page for ``page``."""
         if self._page not in (None, _CLOSED):
-            self._leaving[self._page] = switch
+            switch.leaves = self._page
         self._page = page
 
     def _page_variable(self, keyword: RecordedKeyword, page: str) -> str | None:
         """The variable holding the id of ``page``: the Switch Page that left it
         gets it assigned on first use."""
-        switch = self._leaving.get(page)
-        if switch is None or not keyword.contains(switch):
+        switch = keyword.switch_leaving(page)
+        if switch is None:
             return None
         if switch.assign is None:
             switch.assign = keyword.unique_variable("page")
@@ -351,7 +349,6 @@ class RecorderSession:
                 self.log.append("a page the keyword has no id of was closed")
                 return
             keyword.add(self._mapper.close_page(variable), page=self._page)
-        self._leaving.pop(page, None)
         self._offer = None
         self._undone = self._skipped = False
         self._save()
@@ -359,7 +356,6 @@ class RecorderSession:
     def _reset_pages(self) -> None:
         """A new keyword starts where the last one ended, with no page ids."""
         self._start_page = self._page
-        self._leaving = {}
 
     def _upload(
         self,
@@ -618,7 +614,7 @@ class RecorderSession:
             # Playwright may still refine it.
             self._undone = self._undone if comment else True
             self._page = self._keyword.last_page() or self._start_page
-            self._keyword.drop_unused_assigns(list(self._leaving.values()))
+            self._keyword.drop_unused_page_ids()
             self._offer = None
             self._save()
 
@@ -634,7 +630,6 @@ class RecorderSession:
         self._offer = None
         self._undone = self._skipped = self._paused = False
         self._page = self._start_page
-        self._leaving = {}
         self.log.append(f"discarded '{keyword.name}'")
         self._remove(keyword.name)
 
