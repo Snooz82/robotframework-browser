@@ -1076,7 +1076,7 @@ Open Second Window
     Evaluate JavaScript    ${None}    () => { window.second = window.open(location.href, '_blank'); }
     Wait Until Keyword Succeeds    5s    0.2s    Page Count Should Be    ${{len($before) + 1}}
     ${after} =    Get Page Ids
-    RETURN    ${{[page for page in $after if page not in $before][0]}}
+    RETURN    ${{(set($after) - set($before)).pop()}}
 
 Page Count Should Be
     [Arguments]    ${count}
